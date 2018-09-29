@@ -7,7 +7,11 @@ import java.util.LinkedList;
 public class Solution {
 
     public static void transferSentences(String fileFromPath, String fileToPath, String word) throws Exception{
-        validate(fileFromPath, fileToPath);
+        File fileFrom = new File(fileFromPath);
+        File fileTo = new File(fileToPath);
+
+        validate(fileFromPath, fileFrom);
+        validate(fileToPath, fileTo);
 
         String sentences = readFromFile(fileFromPath).toString();
         String[] arrSentences = sentences.split("\\.");
@@ -18,36 +22,20 @@ public class Solution {
         writeToFile(fileFromPath, prepareLeftSentences(sentencesFromFile), false);
     }
 
-    public static void validate(String fileFromPath, String fileToPath){
-        validateIfFileExist(fileFromPath);
-        validateIfFileExist(fileToPath);
-
-        validateReadingFromFile(fileFromPath);
-
-        validateWritingToFile(fileFromPath);
-        validateWritingToFile(fileToPath);
-    }
-
-    private static void validateIfFileExist(String path){
-        File file = new File(path);
+    public static void validate(String filePath, File file){
+        //validate if files exists
         if(!file.exists()){
-            System.err.println("File " + path + " doesn't exist");
+            System.err.println("File " + filePath + " doesn't exist");
             System.exit(1);
         }
-    }
-
-    private static void validateReadingFromFile(String path){
-        File file = new File(path);
+        //validate if file can be read
         if(!file.canRead()){
-            System.err.println("File " + path + " doesn't have permission for reading");
+            System.err.println("File " + filePath + " doesn't have permission for reading");
             System.exit(1);
         }
-    }
-
-    private static void validateWritingToFile(String path) {
-        File file = new File(path);
+        //validate if can we write to file
         if(!file.canWrite()){
-            System.err.println("File " + path + " doesn't have permission for writing");
+            System.err.println("File " + filePath + " doesn't have permission for writing");
             System.exit(1);
         }
     }
