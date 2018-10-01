@@ -47,10 +47,9 @@ public class Solution {
             while ( (line = br.readLine()) != null) {
                 res.append(line);
             }
-        }catch (FileNotFoundException fEx){
-            System.err.println("File doesn't exist!");
         }catch (IOException ioEx){
             System.err.println("Reading from file " + path + " failed");
+            System.exit(1);
         }
         return res;
     }
@@ -74,9 +73,9 @@ public class Solution {
         StringBuilder result = new StringBuilder();
 
         for(int i = 0; i < sentences.size(); i++){
-            String sentence_i = sentences.get(i);
-            if(sentence_i.length() > 10 && sentence_i.contains(word)){
-                result.append(sentence_i + "\r\n");
+            String sentence = sentences.get(i);
+            if(sentence.length() > 10 && sentence.contains(word)){
+                result.append(sentence + "\r\n");
                 sentences.remove(i);
                 i--;
             }
