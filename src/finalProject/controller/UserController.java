@@ -11,5 +11,8 @@ public class UserController {
         return userService.registerUser(user);
     }
 
+    public User loginUser (String login, String password) {
+        return userService.loginUser(login, password);
+    }
 
 }

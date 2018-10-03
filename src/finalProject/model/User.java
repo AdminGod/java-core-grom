@@ -71,4 +71,9 @@ public class User extends BaseModel {
     public int hashCode() {
         return Objects.hash(userName, password, country, role);
     }
+
+    @Override
+    public String toString() {
+        return this.getId() + ", " + userName + ", " + password  + ", " +  country  + ", " +  role;
+    }
 }

@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 
 public class Main {
 
+    static int errors = 3;
     //findHotelByName(String name)
     //findHotelByCity(String city)
     //Collection findRooms(Filter filter)
@@ -20,69 +21,115 @@ public class Main {
     //void logout()
 
     public static void main(String[] args) {
-
         UserController userController = new UserController();
+        String enteredText = "";
 
-        String consoleData = null;
+        String menu1 = "Print \"register\" for register; Print \"login\" for login; Print \"exit\" for finish your work;";
+        String menu2 = "menu22222";
+        String countryMsg = "Print country name: ";
+        String loginMsg = "Print login (min - 8 characters, max - 16): ";
+        String passwordMsg1 = "Print password (min - 8 characters, max - 16): ";
+        String passwordMsg2 = "Repeat your password: ";
+
+        User user = null;
+
         try (BufferedReader inputStreamReader = new BufferedReader( new InputStreamReader(System.in))){
-            System.out.println("Print \"1\" for register; Print \"2\" for login; Print \"exit\" for finish your work;");
-            String enteredText = inputStreamReader.readLine();
-            //work while won't press exit from the program
-            while(!enteredText.equals("exit")) {
-                if(enteredText.equals("1")) {
-                    User user = getPrintedDataFromRegistration();
-                    if(user != null) {
-                        userController.registerUser(user);
+            printMsg(menu1);
+
+            enteredText = inputStreamReader.readLine();
+            while (!enteredText.equals("exit")) {
+                //regisration
+                if (enteredText.equals("register")) {
+                    printMsg(countryMsg);
+                    String country = inputStreamReader.readLine();
+                    printMsg(loginMsg);
+                    String login = inputStreamReader.readLine();
+                    while (!validate(login, 8, 16)){
+                        login = inputStreamReader.readLine();
+                    }
+                    printMsg(passwordMsg1);
+                    String password1 = inputStreamReader.readLine();
+                    while (!validate(password1, 8, 16)){
+                        password1 = inputStreamReader.readLine();
+                    }
+                    printMsg(passwordMsg2);
+                    String password2 = inputStreamReader.readLine();
+                    while (!comparePass(password1, password2, 8, 16)){
+                        password2 = inputStreamReader.readLine();
+                    }
+                    user = new User(login, password1, country, UserType.USER);
+                    if (userController.registerUser(user) == null){
+                        System.out.println("Can't register user");
+                    }else {
+                        System.out.println("Registration was complete");
+                    }
+                    break;
+                //login
+                }else if (enteredText.equals("login")) {
+                    printMsg(loginMsg);
+                    String login = "";
+                    String password = "";
+                    while((login == "" && password == "") || user == null) {
+                        login = inputStreamReader.readLine();
+                        while (!validate(login, 8, 16)) {
+                            login = inputStreamReader.readLine();
+                        }
+                        printMsg(passwordMsg1);
+                        password = inputStreamReader.readLine();
+                        while (!validate(password, 8, 16)) {
+                            password = inputStreamReader.readLine();
+                        }
+                        user = userController.loginUser(login, password);
+                        if (user != null) {
+                            System.out.println("Login was complete");
+                        }else{
+                            login = "";
+                            password = "";
+                            Main.errors--;
+                            checkErrors();
+                            printMsg(loginMsg);
+                        }
                     }
                 }
-                return;
-                //System.out.println("Print \"1\" for register; Print \"2\" for login; Print \"exit\" for finish your work;");
-                //enteredText = inputStreamReader.readLine();
+                break;
             }
+            printMsg(menu2);
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             System.err.println("Reading from keyboard failed");
         }
+
     }
 
-    private static User getPrintedDataFromRegistration (){
-        User user = null;
-        int errors = 3;
-        String country = getPrintedData("Print country name: ");
-        String login = getPrintedData("Print login (min - 8 characters, max - 16): ");
-        String pass1 = getPrintedData("Print password (min - 8 characters, max - 16): ");
-        String pass2 = "";
-        while (errors > 0) {
-            pass2 = getPrintedData("Repeat your password: ");
-            if(pass1.equals(pass2)){
-                return new User(country, login, pass1, UserType.USER);
-            }
-            errors--;
+    private static void printMsg(String msg){
+        System.out.println(msg);
+    }
+
+    private static boolean validate (String text, int min, int max){
+        if(text.length() < min || text.length() > max){
+            System.out.println("Try again");
+            Main.errors--;
+            return false;
         }
-        System.err.println("Trying amount exceeded");
-        return null;
+        checkErrors();
+        return true;
     }
 
-    private static String getPrintedData(String msg){
-        int errors = 3;
-        String data = "";
-        try (BufferedReader inputStreamReaderReg = new BufferedReader( new InputStreamReader(System.in))){
-            while (errors > 0) {
-                System.out.println(msg);
-                data = inputStreamReaderReg.readLine();
-                if (data.length() >= 8 && data.length() <= 16) {
-                    break;
-                }
-                errors--;
-            }
-            if (errors <= 0 ){
-                System.err.println("Trying amount exceeded");
-                return "";
-            }
-        } catch (IOException e) {
-            System.err.println("Reading from keyboard failed");
+    private static boolean comparePass (String pass1, String pass2, int min, int max){
+        if(pass2.length() < min || pass2.length() > max || !pass1.equals(pass2)){
+            System.out.println("Try again");
+            Main.errors--;
+            return false;
         }
-        return data;
+        checkErrors();
+        return true;
     }
 
+    private static void checkErrors(){
+        if(Main.errors <= 0){
+            System.out.println("Trying amount exceeded.");
+            System.exit(1);
+        }
+    }
 
 }
