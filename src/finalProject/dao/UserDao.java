@@ -4,12 +4,11 @@ import finalProject.model.User;
 import finalProject.model.UserType;
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class UserDao {
+public class UserDao extends Dao {
 
     private final static String DBPATH = "E:\\MEGA\\PT\\java-core-grom_fixed\\src\\finalProject\\UserDb.txt";
 
@@ -24,21 +23,12 @@ public class UserDao {
     }
     //para 0 - id, 1 - login, 2 password, 3 - country, 4 role
     public User getUserByLogin(String login) {
-        File file = new File(UserDao.DBPATH);
 
-        validate(UserDao.DBPATH, file);
+        validate(UserDao.DBPATH, new File(UserDao.DBPATH));
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ( (line = br.readLine()) != null) {
-                String [] userFromDB = line.split(", ");
-                String userFromDBparam = userFromDB[1];
-                if(login.equals(userFromDBparam)){
-                    return new User(new Long(userFromDB[0]), userFromDB[1], userFromDB[2], userFromDB[3], UserType.valueOf(userFromDB[4]));
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Reading from db failed");
+        ArrayList<String> responseFromDB = Dao.findByName(login, UserDao.DBPATH);
+        if(responseFromDB != null && responseFromDB.size() > 0){
+            return parseStringToUser(responseFromDB.get(0));
         }
         return null;
     }
@@ -50,7 +40,7 @@ public class UserDao {
             e.printStackTrace();
         }
     }
-
+    /**
     public void validate(String path, File file){
         //validate existing
         if(!file.exists()){
@@ -68,7 +58,8 @@ public class UserDao {
             System.exit(1);
         }
     }
-
+    */
+    /**
     public long generateID(){
         File file = new File(UserDao.DBPATH);
 
@@ -88,11 +79,12 @@ public class UserDao {
         }
         return id += 1;
     }
+     */
 
     private User save (User user){
         File file = new File(UserDao.DBPATH);
         validate(UserDao.DBPATH, file);
-        user.setId(generateID());
+        user.setId(Dao.generateID(UserDao.DBPATH));
         try {
             FileUtils.write(file, "\r\n" + user.toString(), true);
         } catch (IOException e) {
@@ -112,5 +104,18 @@ public class UserDao {
             return null;
         }
         return user;
+    }
+
+    private ArrayList<User> parseResponseFromDB(ArrayList<String> response){
+        ArrayList<User> result = new ArrayList<>();
+        for(String s : response){
+            result.add(parseStringToUser(s));
+        }
+        return result;
+    }
+
+    private User parseStringToUser(String string){
+        String[] user = string.split(", ");
+        return new User(new Long(user[0]), user[1], user[2], user[3], UserType.valueOf(user[4]));
     }
 }

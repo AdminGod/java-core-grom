@@ -1,5 +1,7 @@
 package finalProject;
 
+import finalProject.controller.HotelController;
+import finalProject.controller.RoomController;
 import finalProject.controller.UserController;
 import finalProject.model.User;
 import finalProject.model.UserType;
@@ -7,6 +9,7 @@ import finalProject.model.UserType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class Main {
 
@@ -22,21 +25,27 @@ public class Main {
 
     public static void main(String[] args) {
         UserController userController = new UserController();
+        HotelController hotelController = new HotelController();
+        RoomController roomController  = new RoomController();
+
         String enteredText = "";
 
         String menu1 = "Print \"register\" for register; Print \"login\" for login; Print \"exit\" for finish your work;";
-        String menu2 = "menu22222";
+        String menu2 = "Select what do you want to do:  \"findHotelByName\" - 1; \"findHotelByCity\" - 2; \"findRooms\" - 3; \"bookRoom\" - 4; \"cancelReservation\" - 5. For finish work print \"exit\"";
         String countryMsg = "Print country name: ";
         String loginMsg = "Print login (min - 8 characters, max - 16): ";
         String passwordMsg1 = "Print password (min - 8 characters, max - 16): ";
         String passwordMsg2 = "Repeat your password: ";
+        String logout = "Logout complete successful";
+        String findHotelByName = "Print hotel name you would like to find";
+        String findHotelByCity = "Print city in which you would like to find a hotel";
 
         User user = null;
 
         try (BufferedReader inputStreamReader = new BufferedReader( new InputStreamReader(System.in))){
             printMsg(menu1);
-
             enteredText = inputStreamReader.readLine();
+
             while (!enteredText.equals("exit")) {
                 //regisration
                 if (enteredText.equals("register")) {
@@ -62,10 +71,12 @@ public class Main {
                         System.out.println("Can't register user");
                     }else {
                         System.out.println("Registration was complete");
+                        printMsg(menu2);
+                        enteredText = inputStreamReader.readLine();
                     }
-                    break;
+                    printMsg(menu2);
                 //login
-                }else if (enteredText.equals("login")) {
+                }else if (enteredText.equals("login") || enteredText.equals("exit")) {
                     printMsg(loginMsg);
                     String login = "";
                     String password = "";
@@ -82,6 +93,8 @@ public class Main {
                         user = userController.loginUser(login, password);
                         if (user != null) {
                             System.out.println("Login was complete");
+                            printMsg(menu2);
+                            enteredText = inputStreamReader.readLine();
                         }else{
                             login = "";
                             password = "";
@@ -90,10 +103,30 @@ public class Main {
                             printMsg(loginMsg);
                         }
                     }
+                //logout
+                }else if(enteredText.equals("logout")){
+                    user = userController.logout();
+                    printMsg(logout);
+                    System.exit(1);
+                //find hotel by name
+                }else if (enteredText.equals("1")) {
+                    printMsg(findHotelByName);
+                    enteredText = inputStreamReader.readLine();
+                    System.out.println(hotelController.findHotelByName(enteredText).toString());
+                    printMsg(menu2);
+                    enteredText = inputStreamReader.readLine();
+                //find hotel by city
+                }else if (enteredText.equals("2")) {
+                    printMsg(findHotelByCity);
+                    enteredText = inputStreamReader.readLine();
+                    System.out.println(Arrays.deepToString(hotelController.findHotelByCity(enteredText).toArray()));
+                    printMsg(menu2);
+                    enteredText = inputStreamReader.readLine();
+                //find find rooms by city
+                }else if (enteredText.equals("3")) {
+
                 }
-                break;
             }
-            printMsg(menu2);
         } catch (IOException e) {
             System.out.println(e.getMessage());
             System.err.println("Reading from keyboard failed");

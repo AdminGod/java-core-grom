@@ -15,4 +15,7 @@ public class UserController {
         return userService.loginUser(login, password);
     }
 
+    public User logout(){
+        return null;
+    }
 }

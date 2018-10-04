@@ -71,4 +71,9 @@ public class Hotel extends BaseModel {
     public int hashCode() {
         return Objects.hash(name, country, city, street);
     }
+
+    @Override
+    public String toString() {
+        return this.getId() + ", " + name + ", " + country + ", " + city + ", " + street;
+    }
 }
