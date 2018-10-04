@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Dao<T> {
+public class Dao {
 
     public static long generateID(String path){
         File file = new File(path);
