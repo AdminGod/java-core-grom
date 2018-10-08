@@ -9,7 +9,9 @@ import finalProject.model.UserType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Date;
 
 public class Main {
 
@@ -38,8 +40,13 @@ public class Main {
         String passwordMsg2 = "Repeat your password: ";
         String logout = "Logout complete successful";
         String findHotelByName = "Print hotel name you would like to find";
-        String findHotelByCity = "Print city in which you would like to find a hotel";
-
+        String findHotelByCity = "Print the city name";
+        String numberOfQuestsMsg = "Select number of quests you would like to reserve";
+        String priceRoomMsg = "Select room. Will shown result +- 100 uah";
+        String petsIncludedMsg = "Print \"yes\" - if you have pets or \"no\" if you don't have any pets";
+        String brfIncluded = "Print \"yes\" - if you need a bft or \"no\" if you don't need a bft";
+        String countryChooseMsg = "Print country name you would like to book the room";
+        String bookRoomMsg = "Select parametrs for booking rooms. Choose amount of ";
         User user = null;
 
         try (BufferedReader inputStreamReader = new BufferedReader( new InputStreamReader(System.in))){
@@ -122,10 +129,50 @@ public class Main {
                     System.out.println(Arrays.deepToString(hotelController.findHotelByCity(enteredText).toArray()));
                     printMsg(menu2);
                     enteredText = inputStreamReader.readLine();
-                //find find rooms by city
+                //find find hotels by city
                 }else if (enteredText.equals("3")) {
-
+                //find rooms
+                printMsg(bookRoomMsg);
+                String guestsNumber = inputStreamReader.readLine();
+                int guestsAmount = parseStringToInt(guestsNumber);
+                while(guestsAmount <= 0) {
+                    guestsNumber = inputStreamReader.readLine();
                 }
+                printMsg("Print average price per night for room");
+                String averagePrice = inputStreamReader.readLine();
+                int price = parseStringToInt(averagePrice);
+                while(guestsAmount <= 0) {
+                    averagePrice = inputStreamReader.readLine();
+                }
+                printMsg("Would you like room with breakfast? Choose: Y/N");
+                String bftIncluded = inputStreamReader.readLine();
+                while(bftIncluded != "Y" || bftIncluded != "N"){
+                    System.out.println("Try again");
+                    Main.errors--;
+                    checkErrors();
+                    bftIncluded = inputStreamReader.readLine();
+                }
+                printMsg("Would you like room with permission for pets? Choose: Y/N");
+                String petsAllowed = inputStreamReader.readLine();
+                while(petsAllowed != "Y" || petsAllowed != "N"){
+                    System.out.println("Try again");
+                    Main.errors--;
+                    checkErrors();
+                    petsAllowed = inputStreamReader.readLine();
+                }
+                printMsg("Print date would you like to in? Format: \"DD-MM-YY\"");
+                String dateAvailableFrom = inputStreamReader.readLine();
+                while(checkDate(dateAvailableFrom) == null){
+                    System.out.println("Try again");
+                    Main.errors--;
+                    checkErrors();
+                    dateAvailableFrom = inputStreamReader.readLine();
+                }
+                String countryFilter = inputStreamReader.readLine();
+                String cityFilter = inputStreamReader.readLine();
+
+            }
+
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -163,6 +210,32 @@ public class Main {
             System.out.println("Trying amount exceeded.");
             System.exit(1);
         }
+    }
+
+    private static int parseStringToInt(String s){
+        int result = 0;
+        try {
+            result = Integer.parseInt(s);
+        } catch (NumberFormatException ex) {
+            Main.errors--;
+            checkErrors();
+            printMsg("Error! Try again. Print number");
+        }
+        return result;
+    }
+
+    private static String checkDate(String s){
+        Date date = null;
+        try {
+            date = new Date(s);
+            return s;
+        } catch (DateTimeParseException ex) {
+            Main.errors--;
+            checkErrors();
+            printMsg("Error! Try again. Print date in format: \"DD-MM-YY\"");
+        }
+        return null;
+
     }
 
 }

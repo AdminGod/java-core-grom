@@ -7,11 +7,13 @@ import java.util.ArrayList;
 
 public class HotelDao extends Dao{
 
+    public HotelDao() {
+        validate(HotelDao.DBPATH, new File(HotelDao.DBPATH));
+    }
+
     private final static String DBPATH = "E:\\MEGA\\PT\\java-core-grom_fixed\\src\\finalProject\\HotelDb.txt";
 
     public ArrayList<Hotel> findHotelByName (String hotelName){
-
-        validate(HotelDao.DBPATH, new File(HotelDao.DBPATH));
 
         ArrayList<Hotel> result = new ArrayList<>();
 
@@ -23,8 +25,6 @@ public class HotelDao extends Dao{
     }
 
     public ArrayList<Hotel> findHotelByCity (String hotelName){
-
-        validate(HotelDao.DBPATH, new File(HotelDao.DBPATH));
 
         ArrayList<String> hotelsAsStrings = Dao.findByParam(hotelName,3, HotelDao.DBPATH);
         if(hotelsAsStrings.size() > 0 ){

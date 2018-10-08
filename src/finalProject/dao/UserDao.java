@@ -10,6 +10,10 @@ import java.util.ArrayList;
 
 public class UserDao extends Dao {
 
+    public UserDao() {
+        validate(UserDao.DBPATH, new File(UserDao.DBPATH));
+    }
+
     private final static String DBPATH = "E:\\MEGA\\PT\\java-core-grom_fixed\\src\\finalProject\\UserDb.txt";
 
 
@@ -23,8 +27,6 @@ public class UserDao extends Dao {
     }
     //para 0 - id, 1 - login, 2 password, 3 - country, 4 role
     public User getUserByLogin(String login) {
-
-        validate(UserDao.DBPATH, new File(UserDao.DBPATH));
 
         ArrayList<String> responseFromDB = Dao.findByName(login, UserDao.DBPATH);
         if(responseFromDB != null && responseFromDB.size() > 0){
@@ -40,50 +42,10 @@ public class UserDao extends Dao {
             e.printStackTrace();
         }
     }
-    /**
-    public void validate(String path, File file){
-        //validate existing
-        if(!file.exists()){
-            System.err.println("DB " + path + " doesn't exist");
-            System.exit(1);
-        }
-        //validate reading
-        if(!file.canRead()){
-            System.err.println("DB " + path + " doesn't have permission for reading");
-            System.exit(1);
-        }
-        //validate writing
-        if(!file.canWrite()){
-            System.err.println("DB " + path + " doesn't have permission for writing");
-            System.exit(1);
-        }
-    }
-    */
-    /**
-    public long generateID(){
-        File file = new File(UserDao.DBPATH);
-
-        validate(UserDao.DBPATH, file);
-        long id = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String user = "";
-            String line;
-            while ( (line = br.readLine()) != null) {
-                if(line.length() > 0){
-                    user = line;
-                }
-            }
-            id = new Long(user.split(", ")[0]);
-        } catch (IOException e) {
-            System.err.println("Reading from db failed");
-        }
-        return id += 1;
-    }
-     */
 
     private User save (User user){
         File file = new File(UserDao.DBPATH);
-        validate(UserDao.DBPATH, file);
+
         user.setId(Dao.generateID(UserDao.DBPATH));
         try {
             FileUtils.write(file, "\r\n" + user.toString(), true);

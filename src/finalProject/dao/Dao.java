@@ -8,10 +8,55 @@ import java.util.ArrayList;
 
 public class Dao {
 
+    public static ArrayList<String> getAll(String path){
+        ArrayList<String> result = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
+            String line;
+            while ( (line = br.readLine()) != null) {
+                result.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Reading from db failed");
+        }
+        return result;
+    }
+
+    public static ArrayList<String> findByParam(String name, int param, String path){
+        return findBy(name, param, path);
+    }
+
+    public static ArrayList<String> findByName(String name, String path){
+        return findBy(name, 1, path);
+    }
+
+
+    public static ArrayList<String> findById(Long id, String path){
+        return findBy(id.toString(), 0, path);
+    }
+
+    private static ArrayList<String> findBy (String param, int column, String path){
+        File file = new File(path);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            ArrayList<String> result = new ArrayList<>();
+            String line;
+            while ( (line = br.readLine()) != null) {
+                String [] objectFromDB = line.split(", ");
+                String objectNameFromDBparam = objectFromDB[column];
+                if(param.equals(objectNameFromDBparam)){
+                    result.add(line);
+                }
+            }
+            return result;
+        } catch (IOException e) {
+            System.err.println("Reading from db failed");
+        }
+        return null;
+    }
+
     public static long generateID(String path){
         File file = new File(path);
 
-        validate(path, file);
         long id = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String user = "";
@@ -45,42 +90,5 @@ public class Dao {
             System.exit(1);
         }
     }
-
-    public static ArrayList<String> findByParam(String name, int param, String path){
-        return findBy(name, param, path);
-    }
-
-    public static ArrayList<String> findByName(String name, String path){
-        return findBy(name, 1, path);
-    }
-
-
-    public static ArrayList<String> findById(Long id, String path){
-        return findBy(id.toString(), 0, path);
-    }
-
-    private static ArrayList<String> findBy (String param, int column, String path){
-        File file = new File(path);
-
-        validate(path, file);
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            ArrayList<String> result = new ArrayList<>();
-            String line;
-            while ( (line = br.readLine()) != null) {
-                String [] objectFromDB = line.split(", ");
-                String objectNameFromDBparam = objectFromDB[column];
-                if(param.equals(objectNameFromDBparam)){
-                    result.add(line);
-                }
-            }
-            return result;
-        } catch (IOException e) {
-            System.err.println("Reading from db failed");
-        }
-        return null;
-    }
-
-
 
 }
