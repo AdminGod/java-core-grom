@@ -30,6 +30,14 @@ public class RoomDao extends Dao{
         return result;
     }
 
+    public Room findRoomById (Long id){
+        ArrayList<String> roomsAsStrings = Dao.findByParam(id.toString(),0, RoomDao.DBPATH);
+        if(roomsAsStrings.size() > 0 ){
+            return parseResponseFromDB(roomsAsStrings).get(0);
+        }
+        return null;
+    }
+
     private ArrayList<Room> parseResponseFromDB(ArrayList<String> response){
         ArrayList<Room> result = new ArrayList<>();
         for(String s : response){

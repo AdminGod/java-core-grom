@@ -10,16 +10,17 @@ import java.util.ArrayList;
 
 public class UserDao extends Dao {
 
+    private final static String DBPATH = "E:\\MEGA\\PT\\java-core-grom_fixed\\src\\finalProject\\UserDb.txt";
+
     public UserDao() {
         validate(UserDao.DBPATH, new File(UserDao.DBPATH));
     }
-
-    private final static String DBPATH = "E:\\MEGA\\PT\\java-core-grom_fixed\\src\\finalProject\\UserDb.txt";
 
 
     //reading data - reading file
     //data processing - mapping data
     public User registerUser (User user) {
+        user.setId(Dao.generateID(UserDao.DBPATH));
         if(getUserByLogin(user.getUserName()) == null){
             return save(user);
         }
@@ -29,7 +30,7 @@ public class UserDao extends Dao {
     public User getUserByLogin(String login) {
 
         ArrayList<String> responseFromDB = Dao.findByName(login, UserDao.DBPATH);
-        if(responseFromDB != null && responseFromDB.size() > 0){
+        if(responseFromDB.size() > 0){
             return parseStringToUser(responseFromDB.get(0));
         }
         return null;
@@ -44,15 +45,7 @@ public class UserDao extends Dao {
     }
 
     private User save (User user){
-        File file = new File(UserDao.DBPATH);
-
-        user.setId(Dao.generateID(UserDao.DBPATH));
-        try {
-            FileUtils.write(file, "\r\n" + user.toString(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return user;
+        return parseStringToUser(Dao.save(user.toString(), DBPATH));
     }
 
     public User loginUser(String login, String password){

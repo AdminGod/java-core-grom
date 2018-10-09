@@ -99,6 +99,6 @@ public class Room extends BaseModel {
 
     @Override
     public String toString() {
-        return this.getId() + numberOfGuests + ", " + price + ", " + breakfastIncluded + ", " + petsAllowed + ", " + dateAvailableFrom + ", " + hotel;
+        return this.getId() + numberOfGuests + ", " + price + ", " + breakfastIncluded + ", " + petsAllowed + ", " + dateAvailableFrom + ", " + hotel.getId();
     }
 }

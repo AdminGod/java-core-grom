@@ -13,4 +13,8 @@ public class RoomService {
     public ArrayList<Room> findRooms(Filter filter){
         return roomDao.findRooms(filter);
     }
+
+    public Room findRoomById(long id){
+        return roomDao.findRoomById(id);
+    }
 }

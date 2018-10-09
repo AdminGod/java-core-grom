@@ -1,16 +1,20 @@
 package finalProject;
 
-import finalProject.dao.HotelDao;
-import finalProject.dao.RoomDao;
-
 import java.text.ParseException;
 
 public class Test {
     public static void main(String[] args) throws ParseException {
+        /**
         //System.out.println((new SimpleDateFormat("dd-MM-yyyy")).parse("20/11/18"));
         RoomDao roomDao = new RoomDao() ;
         HotelDao hotelDao  = new HotelDao() ;
         System.out.println(hotelDao.findHotelById(1111L).toString());
+        //System.out.println(Period.between(new Date(), new Date()).getDays());
+        System.out.println(TimeUnit.DAYS.convert((new Date().getTime() - new Date().getTime()), TimeUnit.MILLISECONDS));
+        System.out.println(new Date().equals(new SimpleDateFormat("dd-MM-yyyy").parse("07-10-2018")));
+        System.out.println(new Date().equals(new Date()));
+         */
+        System.out.println((new String[]{"sdh", "sdh"}).toString());
     }
 
     static class T{};

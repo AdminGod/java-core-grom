@@ -84,4 +84,9 @@ public class Order extends BaseModel {
     public int hashCode() {
         return Objects.hash(user, room, dateFrom, dateTo, moneyPaid);
     }
+
+    @Override
+    public String toString() {
+        return this.getId() + ", " + user.getId() + ", " + room.getId() + ", " + dateFrom + ", " + dateTo + ", " + moneyPaid;
+    }
 }

@@ -15,4 +15,8 @@ public class HotelController {
     public ArrayList<Hotel> findHotelByCity (String city){
         return hotelService.findHotelByCity(city);
     }
+
+    public Hotel findHotelById(long id){
+        return hotelService.findHotelById(id);
+    }
 }

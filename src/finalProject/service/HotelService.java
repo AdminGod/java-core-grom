@@ -16,4 +16,8 @@ public class HotelService {
     public ArrayList<Hotel> findHotelByCity(String city){
         return hotelDao.findHotelByCity(city);
     }
+
+    public Hotel findHotelById(long id){
+        return hotelDao.findHotelById(id);
+    }
 }

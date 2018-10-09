@@ -1,11 +1,10 @@
 package finalProject;
 
 import finalProject.controller.HotelController;
+import finalProject.controller.OrderController;
 import finalProject.controller.RoomController;
 import finalProject.controller.UserController;
-import finalProject.model.Filter;
-import finalProject.model.User;
-import finalProject.model.UserType;
+import finalProject.model.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -31,6 +31,7 @@ public class Main {
         UserController userController = new UserController();
         HotelController hotelController = new HotelController();
         RoomController roomController  = new RoomController();
+        OrderController orderController = new OrderController();
 
         String enteredText = "";
 
@@ -43,12 +44,6 @@ public class Main {
         String logout = "Logout complete successful";
         String findHotelByName = "Print hotel name you would like to find";
         String findHotelByCity = "Print the city name";
-        String numberOfQuestsMsg = "Select number of quests you would like to reserve";
-        String priceRoomMsg = "Select room. Will shown result +- 100 uah";
-        String petsIncludedMsg = "Print \"yes\" - if you have pets or \"no\" if you don't have any pets";
-        String brfIncluded = "Print \"yes\" - if you need a bft or \"no\" if you don't need a bft";
-        String countryChooseMsg = "Print country name you would like to book the room";
-        String bookRoomMsg = "Select parametrs for booking rooms.";
         User user = null;
 
         try (BufferedReader inputStreamReader = new BufferedReader( new InputStreamReader(System.in))){
@@ -56,7 +51,7 @@ public class Main {
             enteredText = inputStreamReader.readLine();
 
             while (!enteredText.equals("exit")) {
-                //regisration
+            //regisration
                 if (enteredText.equals("register")) {
                     printMsg(countryMsg);
                     String country = inputStreamReader.readLine();
@@ -84,7 +79,7 @@ public class Main {
                         enteredText = inputStreamReader.readLine();
                     }
                     printMsg(menu2);
-                //login
+            //login
                 }else if (enteredText.equals("login") || enteredText.equals("exit")) {
                     printMsg(loginMsg);
                     String login = "";
@@ -112,39 +107,41 @@ public class Main {
                             printMsg(loginMsg);
                         }
                     }
-                //logout
+            //logout
                 }else if(enteredText.equals("logout")){
                     user = userController.logout();
                     printMsg(logout);
                     System.exit(1);
-                //find hotel by name
+            //find hotel by name
                 }else if (enteredText.equals("1")) {
                     printMsg(findHotelByName);
                     enteredText = inputStreamReader.readLine();
                     System.out.println(hotelController.findHotelByName(enteredText).toString());
                     printMsg(menu2);
                     enteredText = inputStreamReader.readLine();
-                //find hotel by city
+            //find hotel by city
                 }else if (enteredText.equals("2")) {
                     printMsg(findHotelByCity);
                     enteredText = inputStreamReader.readLine();
                     System.out.println(Arrays.deepToString(hotelController.findHotelByCity(enteredText).toArray()));
                     printMsg(menu2);
                     enteredText = inputStreamReader.readLine();
-                //find find hotels by city
+            //find find hotels by city
                 }else if (enteredText.equals("3")) {
-                //find rooms
+            //find rooms
                 printMsg("Print amount of quests:");
                 String guestsNumber = inputStreamReader.readLine();
                 int guestsAmountFilter = parseStringToInt(guestsNumber);
                 while(guestsAmountFilter <= 0) {
                     guestsNumber = inputStreamReader.readLine();
+                    guestsAmountFilter = parseStringToInt(guestsNumber);
                 }
                 printMsg("Print average price per night for room");
                 String averagePrice = inputStreamReader.readLine();
                 int priceFilter = parseStringToInt(averagePrice);
                 while(guestsAmountFilter <= 0) {
                     averagePrice = inputStreamReader.readLine();
+                    priceFilter = parseStringToInt(averagePrice);
                 }
                 printMsg("Would you like room with breakfast? Choose: Y/N");
                 String bftIncluded = inputStreamReader.readLine();
@@ -176,6 +173,76 @@ public class Main {
                 System.out.println(Arrays.deepToString(roomController.findRooms(filter).toArray()));
                 printMsg(menu2);
                 enteredText = inputStreamReader.readLine();
+            //book room
+                }else if (enteredText.equals("4")) {
+                if(user == null){
+                    printMsg("Error! You've must been logined.");
+                    printMsg(menu1);
+                    enteredText = inputStreamReader.readLine();
+                }
+                printMsg("Select parameters for book the room: ");
+                printMsg("Print a room ID:");
+                String roomIdString = inputStreamReader.readLine();
+                long roomId = parseStringToLong(roomIdString);
+                Room room = null;
+                while(room == null) {
+                    if(roomId > 0){
+                        room = roomController.findRoomById(roomId);
+                        if(room == null){
+                            Main.errors--;
+                            checkErrors();
+                            printMsg("Error! Couldn't find a room. Try again");
+                        }
+                        break;
+                    }
+                    roomIdString = inputStreamReader.readLine();
+                    roomId = parseStringToLong(roomIdString);
+                }
+                printMsg("Print a hotel ID:");
+                String hotelIdString = inputStreamReader.readLine();
+                long hotelId = parseStringToLong(hotelIdString);
+                Hotel hotel = null;
+                while(hotel == null) {
+                    if(hotelId >0){
+                        hotel = hotelController.findHotelById(hotelId);
+                        if(hotel == null){
+                            Main.errors--;
+                            checkErrors();
+                            printMsg("Error! Couldn't find a hotel. Try again");
+                        }
+                        break;
+                    }
+                    hotelIdString = inputStreamReader.readLine();
+                    hotelId = parseStringToLong(hotelIdString);
+                }
+                printMsg("Print a date \"FROM\" which you would like to in? Format: \"dd-MM-yyyy\"");
+                String bookingDateFromString = inputStreamReader.readLine();
+                Date bookingDateFrom = parseStringToDate(bookingDateFromString);
+                while(bookingDateFrom == null){
+                    bookingDateFromString = inputStreamReader.readLine();
+                    bookingDateFrom = parseStringToDate(bookingDateFromString);
+                }
+                printMsg("Print a date \"TO\" which you would like to stay? Format: \"dd-MM-yyyy\"");
+                String bookingDateToString = inputStreamReader.readLine();
+                Date bookingDateTo = parseStringToDate(bookingDateToString);
+                while(bookingDateTo == null){
+                    bookingDateToString = inputStreamReader.readLine();
+                    bookingDateTo = parseStringToDate(bookingDateToString);
+                }
+                long durationOfBooking = TimeUnit.DAYS.convert((bookingDateTo.getTime() - bookingDateFrom.getTime()), TimeUnit.MILLISECONDS);
+                double neededToPay = room.getPrice()* durationOfBooking;
+                printMsg("Print amount you will pay. Needed amount is " + neededToPay + " UAH.");
+                String moneyAmountConsole = inputStreamReader.readLine();
+                double moneyAmount = parseStringToDouble(roomIdString);
+                while(moneyAmount < neededToPay) {
+                    Main.errors--;
+                    checkErrors();
+                    printMsg("Error! The duration of your booking is " + durationOfBooking + " days. The min amount should be not less than " + neededToPay + " UAH. Please, try again.");
+                    moneyAmountConsole = inputStreamReader.readLine();
+                    moneyAmount = parseStringToDouble(roomIdString);
+                }
+                Order order = new Order(user, room, bookingDateFrom, bookingDateTo, moneyAmount);
+                orderController.bookRoom(order);
                 }
 
             }
@@ -221,6 +288,30 @@ public class Main {
         int result = 0;
         try {
             result = Integer.parseInt(s);
+        } catch (NumberFormatException ex) {
+            Main.errors--;
+            checkErrors();
+            printMsg("Error! Try again. Print number");
+        }
+        return result;
+    }
+
+    private static long parseStringToLong(String s){
+        long result = 0;
+        try {
+            result = Long.parseLong(s);
+        } catch (NumberFormatException ex) {
+            Main.errors--;
+            checkErrors();
+            printMsg("Error! Try again. Print number");
+        }
+        return result;
+    }
+
+    private static double parseStringToDouble(String s){
+        double result = 0;
+        try {
+            result = Double.parseDouble(s);
         } catch (NumberFormatException ex) {
             Main.errors--;
             checkErrors();
