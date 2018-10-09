@@ -36,9 +36,9 @@ public class Dao {
 
     private static ArrayList<String> findBy (String param, int column, String path){
         File file = new File(path);
-
+        ArrayList<String> result = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            ArrayList<String> result = new ArrayList<>();
+
             String line;
             while ( (line = br.readLine()) != null) {
                 String [] objectFromDB = line.split(", ");
@@ -47,11 +47,10 @@ public class Dao {
                     result.add(line);
                 }
             }
-            return result;
         } catch (IOException e) {
             System.err.println("Reading from db failed");
         }
-        return null;
+        return result;
     }
 
     public static long generateID(String path){

@@ -96,4 +96,9 @@ public class Room extends BaseModel {
     public int hashCode() {
         return Objects.hash(numberOfGuests, price, breakfastIncluded, petsAllowed, dateAvailableFrom, hotel);
     }
+
+    @Override
+    public String toString() {
+        return this.getId() + numberOfGuests + ", " + price + ", " + breakfastIncluded + ", " + petsAllowed + ", " + dateAvailableFrom + ", " + hotel;
+    }
 }

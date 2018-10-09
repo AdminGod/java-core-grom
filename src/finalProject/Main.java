@@ -3,13 +3,15 @@ package finalProject;
 import finalProject.controller.HotelController;
 import finalProject.controller.RoomController;
 import finalProject.controller.UserController;
+import finalProject.model.Filter;
 import finalProject.model.User;
 import finalProject.model.UserType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.format.DateTimeParseException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -46,7 +48,7 @@ public class Main {
         String petsIncludedMsg = "Print \"yes\" - if you have pets or \"no\" if you don't have any pets";
         String brfIncluded = "Print \"yes\" - if you need a bft or \"no\" if you don't need a bft";
         String countryChooseMsg = "Print country name you would like to book the room";
-        String bookRoomMsg = "Select parametrs for booking rooms. Choose amount of ";
+        String bookRoomMsg = "Select parametrs for booking rooms.";
         User user = null;
 
         try (BufferedReader inputStreamReader = new BufferedReader( new InputStreamReader(System.in))){
@@ -132,46 +134,49 @@ public class Main {
                 //find find hotels by city
                 }else if (enteredText.equals("3")) {
                 //find rooms
-                printMsg(bookRoomMsg);
+                printMsg("Print amount of quests:");
                 String guestsNumber = inputStreamReader.readLine();
-                int guestsAmount = parseStringToInt(guestsNumber);
-                while(guestsAmount <= 0) {
+                int guestsAmountFilter = parseStringToInt(guestsNumber);
+                while(guestsAmountFilter <= 0) {
                     guestsNumber = inputStreamReader.readLine();
                 }
                 printMsg("Print average price per night for room");
                 String averagePrice = inputStreamReader.readLine();
-                int price = parseStringToInt(averagePrice);
-                while(guestsAmount <= 0) {
+                int priceFilter = parseStringToInt(averagePrice);
+                while(guestsAmountFilter <= 0) {
                     averagePrice = inputStreamReader.readLine();
                 }
                 printMsg("Would you like room with breakfast? Choose: Y/N");
                 String bftIncluded = inputStreamReader.readLine();
-                while(bftIncluded != "Y" || bftIncluded != "N"){
-                    System.out.println("Try again");
-                    Main.errors--;
-                    checkErrors();
+                while(!checkYesNotStatus(bftIncluded)){
                     bftIncluded = inputStreamReader.readLine();
                 }
+                boolean breakfastFilter = parseStringToBoolean(bftIncluded);
                 printMsg("Would you like room with permission for pets? Choose: Y/N");
                 String petsAllowed = inputStreamReader.readLine();
-                while(petsAllowed != "Y" || petsAllowed != "N"){
-                    System.out.println("Try again");
-                    Main.errors--;
-                    checkErrors();
+                while(!checkYesNotStatus(petsAllowed)){
                     petsAllowed = inputStreamReader.readLine();
                 }
-                printMsg("Print date would you like to in? Format: \"DD-MM-YY\"");
+                boolean petsFilter = parseStringToBoolean(petsAllowed);
+                printMsg("Print date would you like to in? Format: \"dd-MM-yyyy\"");
                 String dateAvailableFrom = inputStreamReader.readLine();
-                while(checkDate(dateAvailableFrom) == null){
-                    System.out.println("Try again");
-                    Main.errors--;
-                    checkErrors();
+                Date dateAvailableFromFilter = parseStringToDate(dateAvailableFrom);
+                while(dateAvailableFromFilter == null){
                     dateAvailableFrom = inputStreamReader.readLine();
+                    dateAvailableFromFilter = parseStringToDate(dateAvailableFrom);
                 }
+                printMsg("Print country where would you like to stay");
                 String countryFilter = inputStreamReader.readLine();
+                printMsg("Print city where would you like to stay");
                 String cityFilter = inputStreamReader.readLine();
-
-            }
+                Filter filter = new Filter(guestsAmountFilter, priceFilter, breakfastFilter, petsFilter, dateAvailableFromFilter, countryFilter, cityFilter);
+                printMsg("Print city where would you like to stay");
+                printMsg("Rooms by next parametrs:");
+                printMsg("Guests amount: " + guestsAmountFilter + "; price: " + priceFilter + " +-100 UAH; " + " breakfastFilter: " + breakfastFilter + "; petsFilter: " + petsFilter + "; date from: " + dateAvailableFromFilter + "; country: " + countryFilter + "; city: " + cityFilter + ".");
+                System.out.println(Arrays.deepToString(roomController.findRooms(filter).toArray()));
+                printMsg(menu2);
+                enteredText = inputStreamReader.readLine();
+                }
 
             }
         } catch (IOException e) {
@@ -224,17 +229,34 @@ public class Main {
         return result;
     }
 
-    private static String checkDate(String s){
+    private static Date parseStringToDate(String s){
         Date date = null;
         try {
-            date = new Date(s);
-            return s;
-        } catch (DateTimeParseException ex) {
+            date = new SimpleDateFormat("dd-MM-yyyy").parse(s);
+            return date;
+        } catch (ParseException e) {
             Main.errors--;
             checkErrors();
-            printMsg("Error! Try again. Print date in format: \"DD-MM-YY\"");
+            printMsg("Error! Try again. Print date in format: \"dd-MM-yyyy\"");
         }
         return null;
+    }
+
+    private static boolean parseStringToBoolean(String s){
+        if(s.equals("Y")){
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean checkYesNotStatus(String s){
+        while(s.equals("Y") || s.equals("N")){
+            return true;
+        }
+        System.out.println("Try again");
+        Main.errors--;
+        checkErrors();
+        return false;
 
     }
 

@@ -19,7 +19,15 @@ public class HotelDao extends Dao{
 
         ArrayList<String> hotelsAsStrings = Dao.findByName(hotelName, HotelDao.DBPATH);
         if(hotelsAsStrings.size() > 0 ){
-            return parseResponseFromDB(hotelsAsStrings);
+            result = parseResponseFromDB(hotelsAsStrings);
+        }
+        return result;
+    }
+
+    public Hotel findHotelById (Long id){
+        ArrayList<String> hotelsAsStrings = Dao.findByParam(id.toString(),0, HotelDao.DBPATH);
+        if(hotelsAsStrings.size() > 0 ){
+            return parseResponseFromDB(hotelsAsStrings).get(0);
         }
         return null;
     }
@@ -27,11 +35,12 @@ public class HotelDao extends Dao{
     public ArrayList<Hotel> findHotelByCity (String hotelName){
 
         ArrayList<String> hotelsAsStrings = Dao.findByParam(hotelName,3, HotelDao.DBPATH);
+        ArrayList<Hotel> result = new ArrayList<>();
         if(hotelsAsStrings.size() > 0 ){
-            return parseResponseFromDB(hotelsAsStrings);
+            result = parseResponseFromDB(hotelsAsStrings);
         }
 
-        return null;
+        return result;
     }
 
     private ArrayList<Hotel> parseResponseFromDB(ArrayList<String> response){

@@ -1,9 +1,16 @@
 package finalProject;
 
+import finalProject.dao.HotelDao;
+import finalProject.dao.RoomDao;
+
+import java.text.ParseException;
+
 public class Test {
-    public static void main(String[] args) {
-        T one = new T1("gas", "sdffg");
-        System.out.println(one.toString());
+    public static void main(String[] args) throws ParseException {
+        //System.out.println((new SimpleDateFormat("dd-MM-yyyy")).parse("20/11/18"));
+        RoomDao roomDao = new RoomDao() ;
+        HotelDao hotelDao  = new HotelDao() ;
+        System.out.println(hotelDao.findHotelById(1111L).toString());
     }
 
     static class T{};
