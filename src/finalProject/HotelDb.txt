@@ -1,4 +1,0 @@
-1111, Chichikov, Ukraine, Kharkov, Gogolia
-1112, Palace, Ukraine, Kiev, Sumska
-1113, Cezar, Turkey, Ankara, Street
-1114, Ukraine, Ukraine, Kiev, Khreschatik
