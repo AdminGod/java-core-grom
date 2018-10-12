@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Dao <T>{
+public class Dao {
 
     public static String save(String obj, String path){
         write("\r\n" + obj, true, path);
