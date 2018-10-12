@@ -1,6 +1,9 @@
 package finalProject;
 
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Test {
     public static void main(String[] args) throws ParseException {
@@ -14,7 +17,16 @@ public class Test {
         System.out.println(new Date().equals(new SimpleDateFormat("dd-MM-yyyy").parse("07-10-2018")));
         System.out.println(new Date().equals(new Date()));
          */
-        System.out.println((new String[]{"sdh", "sdh"}).toString());
+        //System.out.println((new String[]{"sdh", "sdh"}).toString());
+        Date date1 = new Date();
+        long date2 = 3*1000*60*24;
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date1);
+        cal.add(Calendar.DATE, 3);
+        Date bookingDateTo = cal.getTime();
+        System.out.println(bookingDateTo);
+        System.out.println(date1);
+        System.out.println(date2);
     }
 
     static class T{};

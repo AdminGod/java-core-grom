@@ -14,4 +14,8 @@ public class UserService {
     public User loginUser (String login, String password){
         return userDao.loginUser(login, password);
     }
+
+    public User getUserById (long id){
+        return userDao.getUserById(id);
+    }
 }

@@ -9,11 +9,8 @@ import finalProject.model.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -157,10 +154,10 @@ public class Main {
                 boolean petsFilter = parseStringToBoolean(petsAllowed);
                 printMsg("Print date would you like to in? Format: \"dd-MM-yyyy\"");
                 String dateAvailableFrom = inputStreamReader.readLine();
-                Date dateAvailableFromFilter = parseStringToDate(dateAvailableFrom);
+                Date dateAvailableFromFilter = Utils.StringToDate(dateAvailableFrom);
                 while(dateAvailableFromFilter == null){
                     dateAvailableFrom = inputStreamReader.readLine();
-                    dateAvailableFromFilter = parseStringToDate(dateAvailableFrom);
+                    dateAvailableFromFilter = Utils.StringToDate(dateAvailableFrom);
                 }
                 printMsg("Print country where would you like to stay");
                 String countryFilter = inputStreamReader.readLine();
@@ -203,9 +200,9 @@ public class Main {
                 long hotelId = parseStringToLong(hotelIdString);
                 Hotel hotel = null;
                 while(hotel == null) {
-                    if(hotelId >0){
+                    if (hotelId > 0) {
                         hotel = hotelController.findHotelById(hotelId);
-                        if(hotel == null){
+                        if (hotel == null) {
                             Main.errors--;
                             checkErrors();
                             printMsg("Error! Couldn't find a hotel. Try again");
@@ -215,34 +212,21 @@ public class Main {
                     hotelIdString = inputStreamReader.readLine();
                     hotelId = parseStringToLong(hotelIdString);
                 }
-                printMsg("Print a date \"FROM\" which you would like to in? Format: \"dd-MM-yyyy\"");
-                String bookingDateFromString = inputStreamReader.readLine();
-                Date bookingDateFrom = parseStringToDate(bookingDateFromString);
-                while(bookingDateFrom == null){
-                    bookingDateFromString = inputStreamReader.readLine();
-                    bookingDateFrom = parseStringToDate(bookingDateFromString);
-                }
-                printMsg("Print a date \"TO\" which you would like to stay? Format: \"dd-MM-yyyy\"");
-                String bookingDateToString = inputStreamReader.readLine();
-                Date bookingDateTo = parseStringToDate(bookingDateToString);
-                while(bookingDateTo == null){
-                    bookingDateToString = inputStreamReader.readLine();
-                    bookingDateTo = parseStringToDate(bookingDateToString);
-                }
-                long durationOfBooking = TimeUnit.DAYS.convert((bookingDateTo.getTime() - bookingDateFrom.getTime()), TimeUnit.MILLISECONDS);
-                double neededToPay = room.getPrice()* durationOfBooking;
-                printMsg("Print amount you will pay. Needed amount is " + neededToPay + " UAH.");
-                String moneyAmountConsole = inputStreamReader.readLine();
-                double moneyAmount = parseStringToDouble(roomIdString);
-                while(moneyAmount < neededToPay) {
-                    Main.errors--;
-                    checkErrors();
-                    printMsg("Error! The duration of your booking is " + durationOfBooking + " days. The min amount should be not less than " + neededToPay + " UAH. Please, try again.");
-                    moneyAmountConsole = inputStreamReader.readLine();
-                    moneyAmount = parseStringToDouble(roomIdString);
-                }
-                Order order = new Order(user, room, bookingDateFrom, bookingDateTo, moneyAmount);
-                orderController.bookRoom(order);
+                orderController.bookRoom(roomId, hotelId, user.getId());
+                printMsg(menu2);
+                enteredText = inputStreamReader.readLine();
+            //cancel reservation
+                }else if (enteredText.equals("5")) {
+                    if(user == null){
+                        printMsg("Error! You've must been logined.");
+                        printMsg(menu1);
+                        enteredText = inputStreamReader.readLine();
+                    }
+                    printMsg("Select parameters for cancel the reservation of the room: ");
+                    printMsg("Print a room ID:");
+                    String roomIdString = inputStreamReader.readLine();
+                    long roomId = parseStringToLong(roomIdString);
+
                 }
 
             }
@@ -318,19 +302,6 @@ public class Main {
             printMsg("Error! Try again. Print number");
         }
         return result;
-    }
-
-    private static Date parseStringToDate(String s){
-        Date date = null;
-        try {
-            date = new SimpleDateFormat("dd-MM-yyyy").parse(s);
-            return date;
-        } catch (ParseException e) {
-            Main.errors--;
-            checkErrors();
-            printMsg("Error! Try again. Print date in format: \"dd-MM-yyyy\"");
-        }
-        return null;
     }
 
     private static boolean parseStringToBoolean(String s){

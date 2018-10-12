@@ -41,8 +41,8 @@ public class Dao {
         return findBy(name, 1, path);
     }
 
-    public static ArrayList<String> findById(Long id, String path){
-        return findBy(id.toString(), 0, path);
+    public static ArrayList<String> findById(long id, String path){
+        return findBy(Long.toString(id), 0, path);
     }
 
     private static ArrayList<String> findBy (String param, int column, String path){
@@ -53,11 +53,9 @@ public class Dao {
             String line;
             while ( (line = br.readLine()) != null) {
                 String [] objectFromDB = line.split(", ");
-                /**
                 if(objectFromDB.length < column){
                     continue;
                 }
-                 */
                 String objectNameFromDBparam = objectFromDB[column];
                 if(param.equals(objectNameFromDBparam)){
                     result.add(line);
@@ -105,7 +103,7 @@ public class Dao {
             System.exit(1);
         }
     }
-
+    //rewrite = true - add to the end of file
     private static void write(String content, boolean rewrite, String path){
         File file = new File(path);
 
@@ -113,6 +111,17 @@ public class Dao {
             FileUtils.write(file, content, rewrite);
         } catch (IOException e) {
             System.out.println("Error!!! We couldn't save.");
+        }
+    }
+    //rewrite = false - rewrite the file
+    private static void write(String oldContent,String newContent, boolean rewrite, String path){
+        File file = new File(path);
+
+        try {
+            FileUtils.write(file, newContent, rewrite);
+        } catch (IOException e) {
+            System.out.println("Error!!! We couldn't save.");
+            write(oldContent, false, path);
         }
     }
 

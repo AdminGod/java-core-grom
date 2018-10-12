@@ -1,5 +1,7 @@
 package finalProject.model;
 
+import finalProject.Utils;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -87,6 +89,6 @@ public class Order extends BaseModel {
 
     @Override
     public String toString() {
-        return this.getId() + ", " + user.getId() + ", " + room.getId() + ", " + dateFrom + ", " + dateTo + ", " + moneyPaid;
+        return this.getId() + ", " + user.getId() + ", " + room.getId() + ", " + Utils.dateToString(dateFrom) + ", " + Utils.dateToString(dateTo) + ", " + moneyPaid;
     }
 }

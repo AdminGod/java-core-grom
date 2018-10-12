@@ -15,6 +15,10 @@ public class UserController {
         return userService.loginUser(login, password);
     }
 
+    public User getUserById (long id) {
+        return userService.getUserById(id);
+    }
+
     public User logout(){
         return null;
     }

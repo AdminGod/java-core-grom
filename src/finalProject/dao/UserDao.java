@@ -36,6 +36,15 @@ public class UserDao extends Dao {
         return null;
     }
 
+    public User getUserById(long id) {
+
+        ArrayList<String> responseFromDB = Dao.findById(id, UserDao.DBPATH);
+        if(responseFromDB.size() > 0){
+            return parseStringToUser(responseFromDB.get(0));
+        }
+        return null;
+    }
+
     public void writeToFileApacheIO(String content, File file) {
         try {
             FileUtils.write(file, content);
