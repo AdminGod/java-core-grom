@@ -10,4 +10,8 @@ public class OrderService {
     public void bookRoom(Order order){
         orderDao.bookRoom(order);
     }
+
+    public void cancelReservation(long roomId, long userId) {
+        orderDao.cancelReservation(roomId, userId);
+    }
 }

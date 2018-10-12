@@ -1,32 +1,24 @@
 package finalProject;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
 
 public class Test {
     public static void main(String[] args) throws ParseException {
-        /**
-        //System.out.println((new SimpleDateFormat("dd-MM-yyyy")).parse("20/11/18"));
-        RoomDao roomDao = new RoomDao() ;
-        HotelDao hotelDao  = new HotelDao() ;
-        System.out.println(hotelDao.findHotelById(1111L).toString());
-        //System.out.println(Period.between(new Date(), new Date()).getDays());
-        System.out.println(TimeUnit.DAYS.convert((new Date().getTime() - new Date().getTime()), TimeUnit.MILLISECONDS));
-        System.out.println(new Date().equals(new SimpleDateFormat("dd-MM-yyyy").parse("07-10-2018")));
-        System.out.println(new Date().equals(new Date()));
-         */
-        //System.out.println((new String[]{"sdh", "sdh"}).toString());
-        Date date1 = new Date();
-        long date2 = 3*1000*60*24;
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date1);
-        cal.add(Calendar.DATE, 3);
-        Date bookingDateTo = cal.getTime();
-        System.out.println(bookingDateTo);
-        System.out.println(date1);
-        System.out.println(date2);
+        ArrayList<String> list1 = new ArrayList<>();
+        ArrayList<String> list2 = new ArrayList<>(list1);
+        System.out.println(list1.toString());
+        System.out.println(list2.toString());
+        list1.add("some text1");
+        list1.add("some text2");
+        list1.add("some text3");
+        System.out.println(list1.toString());
+        ArrayList<String> list3 = new ArrayList<>(list1);
+        list1.remove("some text2");
+        System.out.println(list1.toString());
+        System.out.println(list3.toString());
+        System.out.println(String.join("\r\n", list3));
+
     }
 
     static class T{};

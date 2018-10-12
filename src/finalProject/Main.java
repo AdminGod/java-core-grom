@@ -225,8 +225,10 @@ public class Main {
                     printMsg("Select parameters for cancel the reservation of the room: ");
                     printMsg("Print a room ID:");
                     String roomIdString = inputStreamReader.readLine();
-                    long roomId = parseStringToLong(roomIdString);
-
+                    long roomIdforCancel = parseStringToLong(roomIdString);
+                    orderController.cancelReservation(roomIdforCancel, user.getId());
+                    printMsg(menu2);
+                    enteredText = inputStreamReader.readLine();
                 }
 
             }

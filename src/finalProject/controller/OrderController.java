@@ -39,7 +39,10 @@ public class OrderController {
         Order order = new Order(user, room, dateFrom, dateTo, duration*room.getPrice());
 
         orderService.bookRoom(order);
+    }
 
+    public void cancelReservation(long roomId, long userId) {
+        orderService.cancelReservation(roomId, userId);
     }
 
 }

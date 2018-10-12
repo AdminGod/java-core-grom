@@ -8,15 +8,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Dao {
+public class Dao <T>{
 
     public static String save(String obj, String path){
         write("\r\n" + obj, true, path);
-        return obj;
-    }
-
-    public static String update(String obj, String path){
-        write(obj, false, path);
         return obj;
     }
 
@@ -67,6 +62,25 @@ public class Dao {
         return result;
     }
 
+    public static void update(String obj, String path){
+        ArrayList<String> allData = getAll(path);
+        ArrayList<String> backUp = new ArrayList<>(allData);
+
+        String[]params = obj.split(", ");
+        String objId = params[0];
+
+        for(int i = 0; i < allData.size(); i++){
+            String[] paramsS = allData.get(i).split(", ");
+            if(paramsS.length == 0){
+                continue;
+            }
+            if(paramsS[0].equals(objId)){
+                allData.set(i, obj);
+            }
+        }
+        update(String.join("\r\n", backUp), String.join("\r\n", allData), false, path);
+    }
+
     public static long generateID(String path){
         File file = new File(path);
 
@@ -114,7 +128,7 @@ public class Dao {
         }
     }
     //rewrite = false - rewrite the file
-    private static void write(String oldContent,String newContent, boolean rewrite, String path){
+    public static void update(String oldContent,String newContent, boolean rewrite, String path){
         File file = new File(path);
 
         try {
